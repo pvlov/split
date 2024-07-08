@@ -1,7 +1,5 @@
-
 use actix_web::{get, web, App, HttpServer, Responder};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
-
 
 const PGHOST: &str = "postgres";
 
@@ -17,21 +15,18 @@ async fn hello(name: web::Path<String>) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-  
     log::debug!("This is a debug log");
     log::info!("This is an info log");
     log::warn!("This is a warn log");
     log::error!("This is an error log");
 
-    let connection_opts = PgConnectOptions::new()
-        .host(PGHOST);
+    let connection_opts = PgConnectOptions::new().host(PGHOST);
 
     let _pool = PgPoolOptions::new()
         .max_connections(5)
         .connect_with(connection_opts)
         .await
         .expect("Failed to connect to Postgres DB");
-
 
     HttpServer::new(|| App::new().service(index).service(hello))
         .bind(("0.0.0.0", 8080))?
