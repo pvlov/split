@@ -17,7 +17,12 @@ async fn hello(name: web::Path<String>) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-   
+  
+    log::debug!("This is a debug log");
+    log::info!("This is an info log");
+    log::warn!("This is a warn log");
+    log::error!("This is an error log");
+
     let connection_opts = PgConnectOptions::new()
         .host(PGHOST);
 
