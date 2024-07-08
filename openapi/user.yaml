@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Split
+  description: An easy way to split expenses
+  version: 1.0.0
+
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "409":
+          description: Conflict such as username or e-mail already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{user_id}:
+    get:
+      summary: Retrieve a user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the user to retrieve
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+
+    post:
+      summary: Update a user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+
+    delete:
+      summary: Delete a user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the user to delete
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: "b9c394be-47d7-4853-8104-104a22c0cd85"
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        # Add other properties as needed
+
+    UserCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+          minLength: 1
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+          minLength: 1
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+          minLength: 1
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+          minLength: 1
+
+    Error:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: E-Mail already in use
