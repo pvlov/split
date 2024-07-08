@@ -13,7 +13,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserCreate"
+              $ref: "#/components/schemas/UserCreateRequest"
       responses:
         "201":
           description: Created
@@ -26,7 +26,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorResponse"
 
   /users/{user_id}:
     get:
@@ -48,6 +48,8 @@ paths:
                 $ref: "#/components/schemas/User"
         "404":
           description: User not found
+        "401":
+          description: Unauthorized
 
     post:
       summary: Update a user by ID
@@ -64,7 +66,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserUpdate"
+              $ref: "#/components/schemas/UserUpdateRequest"
       responses:
         "200":
           description: OK
@@ -109,7 +111,7 @@ components:
           example: john.doe@example.com
         # Add other properties as needed
 
-    UserCreate:
+    UserCreateRequest:
       type: object
       properties:
         name:
@@ -122,7 +124,7 @@ components:
           example: john.doe@example.com
           minLength: 1
 
-    UserUpdate:
+    UserUpdateRequest:
       type: object
       properties:
         name:
@@ -135,7 +137,7 @@ components:
           example: john.doe@example.com
           minLength: 1
 
-    Error:
+    ErrorResponse:
       type: object
       properties:
         reason:

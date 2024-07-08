@@ -1,4 +1,4 @@
-name: Pipeline
+name: Backend Server Linting & Testing
 on:
   push:
     branches:
