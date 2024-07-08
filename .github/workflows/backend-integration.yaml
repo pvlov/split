@@ -91,10 +91,10 @@ jobs:
           for file in $(find ./openapi -name '*.yaml'); do
             echo "Validating $file"
             if ! output=$(swagger-cli validate "$file" 2>&1); then
-              echo "? Validation failed for $file"
-              echo "$output"
+              echo "Validation failed for $file"
+              echo "$(output)"
               exit 1
             else
-              echo "? Validation successful for $file"
+              echo "Validation successful for $file"
             fi
           done
