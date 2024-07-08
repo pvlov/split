@@ -37,7 +37,14 @@ jobs:
       # Validate all OpenAPI specs
       - name: Validate OpenAPI specs
         run: |
-          for file in $(find ./openapi -name '*.yaml'); do
+          set -e
+          for file in $(find path/to/your/openapi/directory -name '*.yaml'); do
             echo "Validating $file"
-            swagger-cli validate "$file"
+            if ! output=$(swagger-cli validate "$file" 2>&1); then
+              echo "? Validation failed for $file"
+              echo "$output"
+              exit 1
+            else
+              echo "? Validation successful for $file"
+            fi
           done
