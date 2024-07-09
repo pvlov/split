@@ -1,6 +1,6 @@
 mod user_handler;
 
-use actix_web::{App, HttpServer};
+use actix_web::{web, App, HttpServer};
 use sqlx::{
     postgres::{PgConnectOptions, PgPoolOptions},
     PgPool,
@@ -9,13 +9,13 @@ use sqlx::{
 const PGHOST: &str = "postgres";
 
 #[allow(dead_code)]
-struct SplitApp {
+struct AppState {
     pg_pool: PgPool,
 }
 
-impl SplitApp {
+impl AppState {
     pub async fn new() -> Self {
-        let pool = SplitApp::init_db().await;
+        let pool = AppState::init_db().await;
 
         Self { pg_pool: pool }
     }
@@ -30,12 +30,16 @@ impl SplitApp {
             .expect("Failed to connect to Postgres DB")
     }
 }
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let _app = SplitApp::new().await;
-    
-    HttpServer::new(|| App::new().service(user_handler::create_user).service(user_handler::get_user))
-        .bind(("0.0.0.0", 8080))?
-        .run()
-        .await
+    HttpServer::new(move || {
+        App::new()
+            .app_data(async { web::Data::new(AppState::new().await) })
+            .service(user_handler::create_user)
+            .service(user_handler::get_user)
+    })
+    .bind(("0.0.0.0", 8080))?
+    .run()
+    .await
 }

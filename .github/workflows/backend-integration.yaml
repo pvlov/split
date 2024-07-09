@@ -1,4 +1,4 @@
-name: Backend Server Linting & Testing
+name: Backend Integration Pipeline
 on:
   push:
     branches:
