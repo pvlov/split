@@ -11,7 +11,6 @@ fn generate_openapi() -> Result<(), Box<dyn Error>> {
         let path = entry?.path();
         let path_ext = path.extension().and_then(|ext| ext.to_str());
 
-        println!("{:?}", path);
         if path_ext == Some("yaml") || path_ext == Some("yml") {
             let output = Command::new("openapi-generator")
                 .arg("generate")
