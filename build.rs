@@ -1,7 +1,7 @@
 use core::panic;
 use std::{env, error::Error, fs, process::Command};
 
-use dotenv::dotenv;
+use dotenv::{dotenv, from_filename};
 
 fn generate_openapi() -> Result<(), Box<dyn Error>> {
     let input_dir = env::var("OPENAPI_INPUT_DIR")?;
@@ -39,6 +39,6 @@ fn generate_openapi() -> Result<(), Box<dyn Error>> {
 }
 
 fn main() {
-    dotenv().expect("dotenv setup failed");
+    dotenv().unwrap_or(dotenv::from_filename("template.env").expect("No .env or template.env present"));
     generate_openapi().expect("Failed to Generate OpenAPI models");
 }
