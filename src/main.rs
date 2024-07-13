@@ -1,6 +1,7 @@
-mod user_handler;
+mod handler;
+mod ratelimiter;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{middleware, web, App, HttpServer};
 use sqlx::{
     postgres::{PgConnectOptions, PgPoolOptions},
     PgPool,
@@ -35,9 +36,10 @@ impl AppState {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
+            .wrap(middleware::Logger::default())
             .app_data(async { web::Data::new(AppState::new().await) })
-            .service(user_handler::create_user)
-            .service(user_handler::get_user)
+            .service(handler::create_user)
+            .service(handler::get_user)
     })
     .bind(("0.0.0.0", 8080))?
     .run()
