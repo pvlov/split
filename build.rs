@@ -1,8 +1,6 @@
 use core::panic;
 use std::{env, error::Error, fs, process::Command};
 
-use dotenv::dotenv;
-
 fn generate_openapi() -> Result<(), Box<dyn Error>> {
     let input_dir = env::var("OPENAPI_INPUT_DIR")?;
     let output_dir = env::var("OPENAPI_OUTPUT_DIR")?;
