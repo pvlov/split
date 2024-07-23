@@ -32,7 +32,7 @@ EOF
 # runtime dependencies for the application. This often uses a different base
 # image from the build stage where the necessary files are copied from the build
 # stage.
-FROM debian:bullseye-slim AS final
+FROM debian:latest AS final
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
