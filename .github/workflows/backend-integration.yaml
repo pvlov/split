@@ -15,11 +15,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Rust
+      - name: Install Rust Toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install swagger-cli
+        run: npm install -g @apidevtools/swagger-cli
 
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -52,7 +60,7 @@ jobs:
         run: cargo fmt -- --check
 
       - name: Run Clippy
-        run: cargo clippy --bin split -- -D warnings
+        run: cargo clippy --bin split --no-deps -- -D warnings
 
       - name: Run Tests
         run: cargo test --all-targets
