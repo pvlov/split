@@ -4,15 +4,14 @@ mod ratelimiter;
 use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpServer};
 use sqlx::{
-    postgres::{PgConnectOptions, PgPoolOptions},
     migrate::Migrator,
+    postgres::{PgConnectOptions, PgPoolOptions},
     PgPool,
 };
 
 const PG_HOST: &str = "postgres";
 
-static MIGRATOR: Migrator = sqlx::migrate!(); 
-
+static MIGRATOR: Migrator = sqlx::migrate!();
 
 #[allow(dead_code)]
 struct AppState {
