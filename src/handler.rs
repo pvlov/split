@@ -3,8 +3,16 @@ use uuid::Uuid;
 
 use crate::AppState;
 
-#[get("/users/")]
-async fn create_user(_app_state: web::Data<AppState>) -> impl Responder {
+#[get("/health")]
+async fn health() -> impl Responder {
+    "UP"
+}
+
+#[get("/")]
+async fn create_user(app_state: web::Data<AppState>) -> impl Responder {
+
+    let _ = sqlx::query("SELECT 1 + 1 as sum").fetch_one(&app_state.pg_pool).await.expect("Failed query");
+
     "get users!"
 }
 

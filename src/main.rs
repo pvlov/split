@@ -4,16 +4,13 @@ mod ratelimiter;
 use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpServer};
 use sqlx::{
-    migrate::Migrator,
     postgres::{PgConnectOptions, PgPoolOptions},
     PgPool,
 };
 
 const PG_HOST: &str = "postgres";
 
-static MIGRATOR: Migrator = sqlx::migrate!();
-
-#[allow(dead_code)]
+#[derive(Clone)]
 struct AppState {
     pg_pool: PgPool,
 }
@@ -34,7 +31,7 @@ impl AppState {
             .await
             .expect("Failed to connect to Postgres DB");
 
-        MIGRATOR.run(&pool).await.expect("Failed to run DB Migrations");
+        sqlx::migrate!().run(&pool).await.expect("Failed to run DB Migrations");
 
         pool
     }
@@ -42,14 +39,18 @@ impl AppState {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
+    let app_data = AppState::new().await;
+
     HttpServer::new(move || {
         let cors = Cors::default();
         App::new()
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .app_data(async { web::Data::new(AppState::new().await) })
+            .app_data(web::Data::new(app_data.clone()))
             .service(handler::create_user)
             .service(handler::get_user)
+            .service(handler::health)
     })
     .bind(("0.0.0.0", 8080))?
     .run()
