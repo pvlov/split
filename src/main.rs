@@ -39,7 +39,6 @@ impl AppState {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
     env_logger::init();
 
     let app_data = AppState::new().await;
@@ -51,7 +50,6 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .app_data(web::Data::new(app_data.clone()))
             .service(handler::create_user)
-            .service(handler::get_user)
             .service(handler::health)
     })
     .bind(("0.0.0.0", 8080))?
