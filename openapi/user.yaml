@@ -5,141 +5,73 @@ info:
   version: 1.0.0
 
 paths:
-  /users:
+  /user/register:
     post:
+      operationId: Register-User
       summary: Create a new user
+      description: Creates a new user with the parameters supplied in the request body. The users ID is unique.
+      tags:
+        - users
       requestBody:
+        description: "Each field is required to be set. Duplicate Usernames are not allowed."
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserCreateRequest"
+              $ref: "#/components/schemas/UserRegisterRequest"
       responses:
         "201":
-          description: Created
+          description: The Server successfully created the requested User. Returns the id of the newly created User.
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: "#/components/schemas/User"
+                type: string
+                example: "62edecc3-8d2b-4bae-8e2d-ee19398235fa"
+
         "409":
-          description: Conflict such as username or e-mail already in use
+          description: Username already in use.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /users/{user_id}:
-    get:
-      summary: Retrieve a user by ID
-      parameters:
-        - in: path
-          name: user_id
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: UUID of the user to retrieve
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          description: User not found
-        "401":
-          description: Unauthorized
-
-    post:
-      summary: Update a user by ID
-      parameters:
-        - in: path
-          name: user_id
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: UUID of the user to update
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserUpdateRequest"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          description: User not found
-
-    delete:
-      summary: Delete a user by ID
-      parameters:
-        - in: path
-          name: user_id
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: UUID of the user to delete
-      responses:
-        "204":
-          description: No Content
-        "404":
-          description: User not found
+        "500":
+          description: Something went wrong.
 
 components:
   schemas:
-    User:
+    UserRegisterRequest:
       type: object
-      properties:
-        user_id:
-          type: string
-          format: uuid
-          example: "b9c394be-47d7-4853-8104-104a22c0cd85"
-        name:
-          type: string
-          example: John Doe
-        email:
-          type: string
-          format: email
-          example: john.doe@example.com
-        # Add other properties as needed
-
-    UserCreateRequest:
-      type: object
+      description: The request body to create a user.
+      required: [name, password, payment_description]
       properties:
         name:
           type: string
           example: John Doe
           minLength: 1
-        email:
+        password:
           type: string
-          format: email
-          example: john.doe@example.com
-          minLength: 1
-
-    UserUpdateRequest:
-      type: object
-      properties:
-        name:
+          example: "password123"
+          minLength: 6
+        payment_description:
           type: string
-          example: John Doe
-          minLength: 1
-        email:
-          type: string
-          format: email
-          example: john.doe@example.com
-          minLength: 1
+          example: "Link to PayPal"
+      example:
+        {
+          name: "John Doe",
+          password: "password123",
+          payment_description: "Link to Paypal",
+        }
 
     ErrorResponse:
       type: object
+      description: Default error response object. The given String never exposes internal infrastructure and can be shown to the client.
       properties:
         reason:
           type: string
-          example: E-Mail already in use
+          example: Username already in use
+      example: { reason: "Username already in use" }
+
+tags:
+  - name: users
+    description: "Everything about users"

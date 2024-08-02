@@ -40,6 +40,8 @@ impl AppState {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
+    env_logger::init();
+
     let app_data = AppState::new().await;
 
     HttpServer::new(move || {

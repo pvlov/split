@@ -849,30 +849,16 @@ ul.nav-tabs {
   "properties" : {
     "reason" : {
       "type" : "string",
-      "example" : "E-Mail already in use"
+      "example" : "Username already in use"
     }
+  },
+  "description" : "Default error response object. The given String never exposes internal infrastructure and can be shown to the client.",
+  "example" : {
+    "reason" : "Username already in use"
   }
 };
-    defs["User"] = {
-  "type" : "object",
-  "properties" : {
-    "user_id" : {
-      "type" : "string",
-      "format" : "uuid",
-      "example" : "b9c394be-47d7-4853-8104-104a22c0cd85"
-    },
-    "name" : {
-      "type" : "string",
-      "example" : "John Doe"
-    },
-    "email" : {
-      "type" : "string",
-      "format" : "email",
-      "example" : "john.doe@example.com"
-    }
-  }
-};
-    defs["UserCreateRequest"] = {
+    defs["UserRegisterRequest"] = {
+  "required" : [ "name", "password", "payment_description" ],
   "type" : "object",
   "properties" : {
     "name" : {
@@ -880,28 +866,21 @@ ul.nav-tabs {
       "type" : "string",
       "example" : "John Doe"
     },
-    "email" : {
-      "minLength" : 1,
+    "password" : {
+      "minLength" : 6,
       "type" : "string",
-      "format" : "email",
-      "example" : "john.doe@example.com"
-    }
-  }
-};
-    defs["UserUpdateRequest"] = {
-  "type" : "object",
-  "properties" : {
-    "name" : {
-      "minLength" : 1,
-      "type" : "string",
-      "example" : "John Doe"
+      "example" : "password123"
     },
-    "email" : {
-      "minLength" : 1,
+    "payment_description" : {
       "type" : "string",
-      "format" : "email",
-      "example" : "john.doe@example.com"
+      "example" : "Link to PayPal"
     }
+  },
+  "description" : "The request body to create a user.",
+  "example" : {
+    "name" : "John Doe",
+    "password" : "password123",
+    "payment_description" : "Link to Paypal"
   }
 };
 
@@ -923,18 +902,9 @@ ul.nav-tabs {
             -->
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
-                  <li class="nav-header" data-group="Default"><a href="#api-Default">API Methods - Default</a></li>
-                    <li data-group="Default" data-name="usersPost" class="">
-                      <a href="#api-Default-usersPost">usersPost</a>
-                    </li>
-                    <li data-group="Default" data-name="usersUserIdDelete" class="">
-                      <a href="#api-Default-usersUserIdDelete">usersUserIdDelete</a>
-                    </li>
-                    <li data-group="Default" data-name="usersUserIdGet" class="">
-                      <a href="#api-Default-usersUserIdGet">usersUserIdGet</a>
-                    </li>
-                    <li data-group="Default" data-name="usersUserIdPost" class="">
-                      <a href="#api-Default-usersUserIdPost">usersUserIdPost</a>
+                  <li class="nav-header" data-group="Users"><a href="#api-Users">API Methods - Users</a></li>
+                    <li data-group="Users" data-name="registerUser" class="">
+                      <a href="#api-Users-registerUser">registerUser</a>
                     </li>
           </ul>
         </nav>
@@ -957,73 +927,74 @@ ul.nav-tabs {
           </div>
         </div>
         <div id="sections">
-                <section id="api-Default">
-                  <h1>Default</h1>
-                    <div id="api-Default-usersPost">
-                      <article id="api-Default-usersPost-0" data-group="User" data-name="usersPost" data-version="0">
+                <section id="api-Users">
+                  <h1>Users</h1>
+                    <div id="api-Users-registerUser">
+                      <article id="api-Users-registerUser-0" data-group="User" data-name="registerUser" data-version="0">
                         <div class="pull-left">
-                          <h1>usersPost</h1>
+                          <h1>registerUser</h1>
                           <p>Create a new user</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked"></p>
+                        <p class="marked">Creates a new user with the parameters supplied in the request body. The users ID is unique.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/users</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/user/register</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-usersPost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-dart">Dart</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersPost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-usersPost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersPost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-usersPost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-python">Python</a></li>
-                          <li class=""><a href="#examples-Default-usersPost-0-rust">Rust</a></li>
+                          <li class="active"><a href="#examples-Users-registerUser-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Users-registerUser-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Users-registerUser-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Users-registerUser-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Users-registerUser-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Users-registerUser-0-rust">Rust</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-usersPost-0-curl">
+                          <div class="tab-pane active" id="examples-Users-registerUser-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: application/json" \
+ -H "Accept: text/plain,application/json" \
  -H "Content-Type: application/json" \
- "http://localhost/users" \
+ "http://localhost/user/register" \
  -d '{
   &quot;name&quot; : &quot;John Doe&quot;,
-  &quot;email&quot; : &quot;john.doe@example.com&quot;
+  &quot;password&quot; : &quot;password123&quot;,
+  &quot;payment_description&quot; : &quot;Link to Paypal&quot;
 }'
 </code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-usersPost-0-java">
+                          <div class="tab-pane" id="examples-Users-registerUser-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
 import org.openapitools.client.auth.*;
 import org.openapitools.client.model.*;
-import org.openapitools.client.api.DefaultApi;
+import org.openapitools.client.api.UsersApi;
 
 import java.io.File;
 import java.util.*;
 
-public class DefaultApiExample {
+public class UsersApiExample {
     public static void main(String[] args) {
 
         // Create an instance of the API class
-        DefaultApi apiInstance = new DefaultApi();
-        UserCreateRequest userCreateRequest = ; // UserCreateRequest | 
+        UsersApi apiInstance = new UsersApi();
+        UserRegisterRequest userRegisterRequest = ; // UserRegisterRequest | 
 
         try {
-            User result = apiInstance.usersPost(userCreateRequest);
+            'String' result = apiInstance.registerUser(userRegisterRequest);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersPost");
+            System.err.println("Exception when calling UsersApi#registerUser");
             e.printStackTrace();
         }
     }
@@ -1031,55 +1002,55 @@ public class DefaultApiExample {
 </code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-usersPost-0-dart">
+                          <div class="tab-pane" id="examples-Users-registerUser-0-dart">
                             <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
 
 final api_instance = DefaultApi();
 
-final UserCreateRequest userCreateRequest = new UserCreateRequest(); // UserCreateRequest | 
+final UserRegisterRequest userRegisterRequest = new UserRegisterRequest(); // UserRegisterRequest | 
 
 try {
-    final result = await api_instance.usersPost(userCreateRequest);
+    final result = await api_instance.registerUser(userRegisterRequest);
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->usersPost: $e\n');
+    print('Exception when calling DefaultApi->registerUser: $e\n');
 }
 
 </code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-usersPost-0-android">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.DefaultApi;
+                          <div class="tab-pane" id="examples-Users-registerUser-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.UsersApi;
 
-public class DefaultApiExample {
+public class UsersApiExample {
     public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        UserCreateRequest userCreateRequest = ; // UserCreateRequest | 
+        UsersApi apiInstance = new UsersApi();
+        UserRegisterRequest userRegisterRequest = ; // UserRegisterRequest | 
 
         try {
-            User result = apiInstance.usersPost(userCreateRequest);
+            'String' result = apiInstance.registerUser(userRegisterRequest);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersPost");
+            System.err.println("Exception when calling UsersApi#registerUser");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-usersPost-0-groovy">
+  <div class="tab-pane" id="examples-Users-registerUser-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-usersPost-0-objc">
+                            <div class="tab-pane" id="examples-Users-registerUser-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">
 
 // Create an instance of the API class
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-UserCreateRequest *userCreateRequest = ; // 
+UsersApi *apiInstance = [[UsersApi alloc] init];
+UserRegisterRequest *userRegisterRequest = ; // 
 
 // Create a new user
-[apiInstance usersPostWith:userCreateRequest
-              completionHandler: ^(User output, NSError* error) {
+[apiInstance registerUserWith:userRegisterRequest
+              completionHandler: ^('String' output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -1090,12 +1061,12 @@ UserCreateRequest *userCreateRequest = ; //
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-usersPost-0-javascript">
+                            <div class="tab-pane" id="examples-Users-registerUser-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var Split = require('split');
 
 // Create an instance of the API class
-var api = new Split.DefaultApi()
-var userCreateRequest = ; // {UserCreateRequest} 
+var api = new Split.UsersApi()
+var userRegisterRequest = ; // {UserRegisterRequest} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1104,14 +1075,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.usersPost(userCreateRequest, callback);
+api.registerUser(userRegisterRequest, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-usersPost-0-angular">
+                            <!--<div class="tab-pane" id="examples-Users-registerUser-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-usersPost-0-csharp">
+                            <div class="tab-pane" id="examples-Users-registerUser-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using Org.OpenAPITools.Api;
@@ -1120,21 +1091,21 @@ using Org.OpenAPITools.Model;
 
 namespace Example
 {
-    public class usersPostExample
+    public class registerUserExample
     {
         public void main()
         {
 
             // Create an instance of the API class
-            var apiInstance = new DefaultApi();
-            var userCreateRequest = new UserCreateRequest(); // UserCreateRequest | 
+            var apiInstance = new UsersApi();
+            var userRegisterRequest = new UserRegisterRequest(); // UserRegisterRequest | 
 
             try {
                 // Create a new user
-                User result = apiInstance.usersPost(userCreateRequest);
+                'String' result = apiInstance.registerUser(userRegisterRequest);
                 Debug.WriteLine(result);
             } catch (Exception e) {
-                Debug.Print("Exception when calling DefaultApi.usersPost: " + e.Message );
+                Debug.Print("Exception when calling UsersApi.registerUser: " + e.Message );
             }
         }
     }
@@ -1142,42 +1113,42 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-usersPost-0-php">
+                            <div class="tab-pane" id="examples-Users-registerUser-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 // Create an instance of the API class
-$api_instance = new OpenAPITools\Client\Api\DefaultApi();
-$userCreateRequest = ; // UserCreateRequest | 
+$api_instance = new OpenAPITools\Client\Api\UsersApi();
+$userRegisterRequest = ; // UserRegisterRequest | 
 
 try {
-    $result = $api_instance->usersPost($userCreateRequest);
+    $result = $api_instance->registerUser($userRegisterRequest);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->usersPost: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling UsersApi->registerUser: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-usersPost-0-perl">
+                            <div class="tab-pane" id="examples-Users-registerUser-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::OPenAPIClient::Configuration;
-use WWW::OPenAPIClient::DefaultApi;
+use WWW::OPenAPIClient::UsersApi;
 
 # Create an instance of the API class
-my $api_instance = WWW::OPenAPIClient::DefaultApi->new();
-my $userCreateRequest = WWW::OPenAPIClient::Object::UserCreateRequest->new(); # UserCreateRequest | 
+my $api_instance = WWW::OPenAPIClient::UsersApi->new();
+my $userRegisterRequest = WWW::OPenAPIClient::Object::UserRegisterRequest->new(); # UserRegisterRequest | 
 
 eval {
-    my $result = $api_instance->usersPost(userCreateRequest => $userCreateRequest);
+    my $result = $api_instance->registerUser(userRegisterRequest => $userRegisterRequest);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->usersPost: $@\n";
+    warn "Exception when calling UsersApi->registerUser: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-usersPost-0-python">
+                            <div class="tab-pane" id="examples-Users-registerUser-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import openapi_client
@@ -1185,25 +1156,25 @@ from openapi_client.rest import ApiException
 from pprint import pprint
 
 # Create an instance of the API class
-api_instance = openapi_client.DefaultApi()
-userCreateRequest =  # UserCreateRequest | 
+api_instance = openapi_client.UsersApi()
+userRegisterRequest =  # UserRegisterRequest | 
 
 try:
     # Create a new user
-    api_response = api_instance.users_post(userCreateRequest)
+    api_response = api_instance.register_user(userRegisterRequest)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->usersPost: %s\n" % e)</code></pre>
+    print("Exception when calling UsersApi->registerUser: %s\n" % e)</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-usersPost-0-rust">
-                              <pre class="prettyprint"><code class="language-rust">extern crate DefaultApi;
+                            <div class="tab-pane" id="examples-Users-registerUser-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
 
 pub fn main() {
-    let userCreateRequest = ; // UserCreateRequest
+    let userRegisterRequest = ; // UserRegisterRequest
 
-    let mut context = DefaultApi::Context::default();
-    let result = client.usersPost(userCreateRequest, &context).wait();
+    let mut context = UsersApi::Context::default();
+    let result = client.registerUser(userRegisterRequest, &context).wait();
 
     println!("{:?}", result);
 }
@@ -1226,16 +1197,17 @@ pub fn main() {
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">userCreateRequest <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">userRegisterRequest <span style="color:red;">*</span></td>
 <td>
-<p class="marked"></p>
+<p class="marked">Each field is required to be set. Duplicate Usernames are not allowed.</p>
 <script>
 $(document).ready(function() {
   var schemaWrapper = {
+  "description" : "Each field is required to be set. Duplicate Usernames are not allowed.",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/UserCreateRequest"
+        "$ref" : "#/components/schemas/UserRegisterRequest"
       }
     }
   },
@@ -1258,12 +1230,12 @@ $(document).ready(function() {
   }
 
   var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-  var result = $('#d2e199_usersPost_userCreateRequest');
+  var result = $('#d2e199_registerUser_userRegisterRequest');
   result.empty();
   result.append(view.render());
 });
 </script>
-<div id="d2e199_usersPost_userCreateRequest"></div>
+<div id="d2e199_registerUser_userRegisterRequest"></div>
 </td>
 </tr>
 
@@ -1272,23 +1244,23 @@ $(document).ready(function() {
 
 
                           <h2>Responses</h2>
-                            <h3 id="examples-Default-usersPost-title-201"></h3>
-                            <p id="examples-Default-usersPost-description-201" class="marked"></p>
+                            <h3 id="examples-Users-registerUser-title-201"></h3>
+                            <p id="examples-Users-registerUser-description-201" class="marked"></p>
                             <script>
-                              var responseDefault201_description = `Created`;
-                              var responseDefault201_description_break = responseDefault201_description.indexOf('\n');
-                              if (responseDefault201_description_break == -1) {
-                                $("#examples-Default-usersPost-title-201").text("Status: 201 - " + responseDefault201_description);
+                              var responseUsers201_description = `The Server successfully created the requested User. Returns the id of the newly created User.`;
+                              var responseUsers201_description_break = responseUsers201_description.indexOf('\n');
+                              if (responseUsers201_description_break == -1) {
+                                $("#examples-Users-registerUser-title-201").text("Status: 201 - " + responseUsers201_description);
                               } else {
-                                $("#examples-Default-usersPost-title-201").text("Status: 201 - " + responseDefault201_description.substring(0, responseDefault201_description_break));
-                                $("#examples-Default-usersPost-description-201").html(responseDefault201_description.substring(responseDefault201_description_break));
+                                $("#examples-Users-registerUser-title-201").text("Status: 201 - " + responseUsers201_description.substring(0, responseUsers201_description_break));
+                                $("#examples-Users-registerUser-description-201").html(responseUsers201_description.substring(responseUsers201_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Default-usersPost-201" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Users-registerUser-201" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Default-usersPost-201-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Users-registerUser-201-schema">Schema</a>
                                 </li>
 
 
@@ -1297,17 +1269,18 @@ $(document).ready(function() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Default-usersPost-201-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersPost-201-schema">
-                                <div id="responses-Default-usersPost-schema-201" class="exampleStyle">
+                            <div class="tab-content" id="responses-Users-registerUser-201-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-registerUser-201-schema">
+                                <div id="responses-Users-registerUser-schema-201" class="exampleStyle">
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "Created",
+  "description" : "The Server successfully created the requested User. Returns the id of the newly created User.",
   "content" : {
-    "application/json" : {
+    "text/plain" : {
       "schema" : {
-        "$ref" : "#/components/schemas/User"
+        "type" : "string",
+        "example" : "62edecc3-8d2b-4bae-8e2d-ee19398235fa"
       }
     }
   }
@@ -1338,33 +1311,33 @@ $(document).ready(function() {
                                       }
 
                                       var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersPost-201-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersPost-schema-201');
+                                      $('#responses-Users-registerUser-201-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-registerUser-schema-201');
                                       result.empty();
                                       result.append(view.render());
                                     });
                                   </script>
                                 </div>
-                                <input id='responses-Default-usersPost-201-schema-data' type='hidden' value=''></input>
+                                <input id='responses-Users-registerUser-201-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
-                            <h3 id="examples-Default-usersPost-title-409"></h3>
-                            <p id="examples-Default-usersPost-description-409" class="marked"></p>
+                            <h3 id="examples-Users-registerUser-title-409"></h3>
+                            <p id="examples-Users-registerUser-description-409" class="marked"></p>
                             <script>
-                              var responseDefault409_description = `Conflict such as username or e-mail already in use`;
-                              var responseDefault409_description_break = responseDefault409_description.indexOf('\n');
-                              if (responseDefault409_description_break == -1) {
-                                $("#examples-Default-usersPost-title-409").text("Status: 409 - " + responseDefault409_description);
+                              var responseUsers409_description = `Username already in use.`;
+                              var responseUsers409_description_break = responseUsers409_description.indexOf('\n');
+                              if (responseUsers409_description_break == -1) {
+                                $("#examples-Users-registerUser-title-409").text("Status: 409 - " + responseUsers409_description);
                               } else {
-                                $("#examples-Default-usersPost-title-409").text("Status: 409 - " + responseDefault409_description.substring(0, responseDefault409_description_break));
-                                $("#examples-Default-usersPost-description-409").html(responseDefault409_description.substring(responseDefault409_description_break));
+                                $("#examples-Users-registerUser-title-409").text("Status: 409 - " + responseUsers409_description.substring(0, responseUsers409_description_break));
+                                $("#examples-Users-registerUser-description-409").html(responseUsers409_description.substring(responseUsers409_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Default-usersPost-409" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Users-registerUser-409" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Default-usersPost-409-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Users-registerUser-409-schema">Schema</a>
                                 </li>
 
 
@@ -1373,13 +1346,13 @@ $(document).ready(function() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Default-usersPost-409-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersPost-409-schema">
-                                <div id="responses-Default-usersPost-schema-409" class="exampleStyle">
+                            <div class="tab-content" id="responses-Users-registerUser-409-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-registerUser-409-schema">
+                                <div id="responses-Users-registerUser-schema-409" class="exampleStyle">
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "Conflict such as username or e-mail already in use",
+  "description" : "Username already in use.",
   "content" : {
     "application/json" : {
       "schema" : {
@@ -1414,329 +1387,43 @@ $(document).ready(function() {
                                       }
 
                                       var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersPost-409-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersPost-schema-409');
+                                      $('#responses-Users-registerUser-409-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-registerUser-schema-409');
                                       result.empty();
                                       result.append(view.render());
                                     });
                                   </script>
                                 </div>
-                                <input id='responses-Default-usersPost-409-schema-data' type='hidden' value=''></input>
+                                <input id='responses-Users-registerUser-409-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-usersUserIdDelete">
-                      <article id="api-Default-usersUserIdDelete-0" data-group="User" data-name="usersUserIdDelete" data-version="0">
-                        <div class="pull-left">
-                          <h1>usersUserIdDelete</h1>
-                          <p>Delete a user by ID</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/users/{user_id}</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-usersUserIdDelete-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-dart">Dart</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersUserIdDelete-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersUserIdDelete-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-python">Python</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdDelete-0-rust">Rust</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-usersUserIdDelete-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE \
- "http://localhost/users/{user_id}"
-</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-java">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
-import org.openapitools.client.auth.*;
-import org.openapitools.client.model.*;
-import org.openapitools.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-    public static void main(String[] args) {
-
-        // Create an instance of the API class
-        DefaultApi apiInstance = new DefaultApi();
-        UUID userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to delete
-
-        try {
-            apiInstance.usersUserIdDelete(userId);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersUserIdDelete");
-            e.printStackTrace();
-        }
-    }
-}
-</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-dart">
-                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
-
-final api_instance = DefaultApi();
-
-final UUID userId = new UUID(); // UUID | UUID of the user to delete
-
-try {
-    final result = await api_instance.usersUserIdDelete(userId);
-    print(result);
-} catch (e) {
-    print('Exception when calling DefaultApi->usersUserIdDelete: $e\n');
-}
-
-</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-android">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.DefaultApi;
-
-public class DefaultApiExample {
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        UUID userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to delete
-
-        try {
-            apiInstance.usersUserIdDelete(userId);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersUserIdDelete");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
-
-// Create an instance of the API class
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-UUID *userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID of the user to delete (default to null)
-
-// Delete a user by ID
-[apiInstance usersUserIdDeleteWith:userId
-              completionHandler: ^(NSError* error) {
-    if (error) {
-        NSLog(@"Error: %@", error);
-    }
-}];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var Split = require('split');
-
-// Create an instance of the API class
-var api = new Split.DefaultApi()
-var userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {UUID} UUID of the user to delete
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
-};
-api.usersUserIdDelete(userId, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-usersUserIdDelete-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using Org.OpenAPITools.Api;
-using Org.OpenAPITools.Client;
-using Org.OpenAPITools.Model;
-
-namespace Example
-{
-    public class usersUserIdDeleteExample
-    {
-        public void main()
-        {
-
-            // Create an instance of the API class
-            var apiInstance = new DefaultApi();
-            var userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d;  // UUID | UUID of the user to delete (default to null)
-
-            try {
-                // Delete a user by ID
-                apiInstance.usersUserIdDelete(userId);
-            } catch (Exception e) {
-                Debug.Print("Exception when calling DefaultApi.usersUserIdDelete: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Create an instance of the API class
-$api_instance = new OpenAPITools\Client\Api\DefaultApi();
-$userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to delete
-
-try {
-    $api_instance->usersUserIdDelete($userId);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->usersUserIdDelete: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::OPenAPIClient::Configuration;
-use WWW::OPenAPIClient::DefaultApi;
-
-# Create an instance of the API class
-my $api_instance = WWW::OPenAPIClient::DefaultApi->new();
-my $userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | UUID of the user to delete
-
-eval {
-    $api_instance->usersUserIdDelete(userId => $userId);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->usersUserIdDelete: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import openapi_client
-from openapi_client.rest import ApiException
-from pprint import pprint
-
-# Create an instance of the API class
-api_instance = openapi_client.DefaultApi()
-userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | UUID of the user to delete (default to null)
-
-try:
-    # Delete a user by ID
-    api_instance.users_user_id_delete(userId)
-except ApiException as e:
-    print("Exception when calling DefaultApi->usersUserIdDelete: %s\n" % e)</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdDelete-0-rust">
-                              <pre class="prettyprint"><code class="language-rust">extern crate DefaultApi;
-
-pub fn main() {
-    let userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID
-
-    let mut context = DefaultApi::Context::default();
-    let result = client.usersUserIdDelete(userId, &context).wait();
-
-    println!("{:?}", result);
-}
-</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Scopes</h2>
-                          <table>
-                            
-                          </table>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">user_id*</td>
-<td>
-
-
-    <div id="d2e199_usersUserIdDelete_userId">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    UUID
-                </span>
-                    <span class="format">
-                        (uuid)
-                    </span>
-
-                    <div class="inner description marked">
-UUID of the user to delete
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
-
-
-
-
-
-                          <h2>Responses</h2>
-                            <h3 id="examples-Default-usersUserIdDelete-title-204"></h3>
-                            <p id="examples-Default-usersUserIdDelete-description-204" class="marked"></p>
+                            <h3 id="examples-Users-registerUser-title-500"></h3>
+                            <p id="examples-Users-registerUser-description-500" class="marked"></p>
                             <script>
-                              var responseDefault204_description = `No Content`;
-                              var responseDefault204_description_break = responseDefault204_description.indexOf('\n');
-                              if (responseDefault204_description_break == -1) {
-                                $("#examples-Default-usersUserIdDelete-title-204").text("Status: 204 - " + responseDefault204_description);
+                              var responseUsers500_description = `Something went wrong.`;
+                              var responseUsers500_description_break = responseUsers500_description.indexOf('\n');
+                              if (responseUsers500_description_break == -1) {
+                                $("#examples-Users-registerUser-title-500").text("Status: 500 - " + responseUsers500_description);
                               } else {
-                                $("#examples-Default-usersUserIdDelete-title-204").text("Status: 204 - " + responseDefault204_description.substring(0, responseDefault204_description_break));
-                                $("#examples-Default-usersUserIdDelete-description-204").html(responseDefault204_description.substring(responseDefault204_description_break));
+                                $("#examples-Users-registerUser-title-500").text("Status: 500 - " + responseUsers500_description.substring(0, responseUsers500_description_break));
+                                $("#examples-Users-registerUser-description-500").html(responseUsers500_description.substring(responseUsers500_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Default-usersUserIdDelete-204" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Users-registerUser-500" class="nav nav-tabs nav-tabs-examples" >
 
 
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Default-usersUserIdDelete-204-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdDelete-204-schema">
-                                <div id="responses-Default-usersUserIdDelete-schema-204" class="exampleStyle">
+                            <div class="tab-content" id="responses-Users-registerUser-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-registerUser-500-schema">
+                                <div id="responses-Users-registerUser-schema-500" class="exampleStyle">
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "No Content"
+  "description" : "Something went wrong."
 };
                                       var schema = findNode('schema',schemaWrapper).schema;
                                       if (!schema) {
@@ -1764,1078 +1451,14 @@ UUID of the user to delete
                                       }
 
                                       var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdDelete-204-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdDelete-schema-204');
+                                      $('#responses-Users-registerUser-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-registerUser-schema-500');
                                       result.empty();
                                       result.append(view.render());
                                     });
                                   </script>
                                 </div>
-                                <input id='responses-Default-usersUserIdDelete-204-schema-data' type='hidden' value=''></input>
-                              </div>
-                            </div>
-                            <h3 id="examples-Default-usersUserIdDelete-title-404"></h3>
-                            <p id="examples-Default-usersUserIdDelete-description-404" class="marked"></p>
-                            <script>
-                              var responseDefault404_description = `User not found`;
-                              var responseDefault404_description_break = responseDefault404_description.indexOf('\n');
-                              if (responseDefault404_description_break == -1) {
-                                $("#examples-Default-usersUserIdDelete-title-404").text("Status: 404 - " + responseDefault404_description);
-                              } else {
-                                $("#examples-Default-usersUserIdDelete-title-404").text("Status: 404 - " + responseDefault404_description.substring(0, responseDefault404_description_break));
-                                $("#examples-Default-usersUserIdDelete-description-404").html(responseDefault404_description.substring(responseDefault404_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Default-usersUserIdDelete-404" class="nav nav-tabs nav-tabs-examples" >
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Default-usersUserIdDelete-404-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdDelete-404-schema">
-                                <div id="responses-Default-usersUserIdDelete-schema-404" class="exampleStyle">
-                                  <script>
-                                    $(document).ready(function() {
-                                      var schemaWrapper = {
-  "description" : "User not found"
-};
-                                      var schema = findNode('schema',schemaWrapper).schema;
-                                      if (!schema) {
-                                        schema = schemaWrapper.schema;
-                                      }
-                                      if (schema == null) {
-                                        return;
-                                      }
-                                      if (schema.$ref != null) {
-                                        schema = defsParser.$refs.get(schema.$ref);
-                                        if (schema.properties != null) {
-                                          Object.keys(schema.properties).forEach( (item) => {
-                                            if (schema.properties[item].$ref != null) {
-                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
-                                            }
-                                          });
-                                        }
-                                      } else if (schema.items != null && schema.items.$ref != null) {
-                                        schema.items = defsParser.$refs.get(schema.items.$ref);
-                                      } else {
-                                        schemaWrapper.definitions = Object.assign({}, defs);
-                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                          console.log(err);
-                                        });
-                                      }
-
-                                      var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdDelete-404-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdDelete-schema-404');
-                                      result.empty();
-                                      result.append(view.render());
-                                    });
-                                  </script>
-                                </div>
-                                <input id='responses-Default-usersUserIdDelete-404-schema-data' type='hidden' value=''></input>
-                              </div>
-                            </div>
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-usersUserIdGet">
-                      <article id="api-Default-usersUserIdGet-0" data-group="User" data-name="usersUserIdGet" data-version="0">
-                        <div class="pull-left">
-                          <h1>usersUserIdGet</h1>
-                          <p>Retrieve a user by ID</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/users/{user_id}</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-usersUserIdGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-dart">Dart</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersUserIdGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersUserIdGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-python">Python</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdGet-0-rust">Rust</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-usersUserIdGet-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
- -H "Accept: application/json" \
- "http://localhost/users/{user_id}"
-</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-usersUserIdGet-0-java">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
-import org.openapitools.client.auth.*;
-import org.openapitools.client.model.*;
-import org.openapitools.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-    public static void main(String[] args) {
-
-        // Create an instance of the API class
-        DefaultApi apiInstance = new DefaultApi();
-        UUID userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to retrieve
-
-        try {
-            User result = apiInstance.usersUserIdGet(userId);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersUserIdGet");
-            e.printStackTrace();
-        }
-    }
-}
-</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-usersUserIdGet-0-dart">
-                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
-
-final api_instance = DefaultApi();
-
-final UUID userId = new UUID(); // UUID | UUID of the user to retrieve
-
-try {
-    final result = await api_instance.usersUserIdGet(userId);
-    print(result);
-} catch (e) {
-    print('Exception when calling DefaultApi->usersUserIdGet: $e\n');
-}
-
-</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-usersUserIdGet-0-android">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.DefaultApi;
-
-public class DefaultApiExample {
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        UUID userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to retrieve
-
-        try {
-            User result = apiInstance.usersUserIdGet(userId);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersUserIdGet");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-usersUserIdGet-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
-
-// Create an instance of the API class
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-UUID *userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID of the user to retrieve (default to null)
-
-// Retrieve a user by ID
-[apiInstance usersUserIdGetWith:userId
-              completionHandler: ^(User output, NSError* error) {
-    if (output) {
-        NSLog(@"%@", output);
-    }
-    if (error) {
-        NSLog(@"Error: %@", error);
-    }
-}];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var Split = require('split');
-
-// Create an instance of the API class
-var api = new Split.DefaultApi()
-var userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {UUID} UUID of the user to retrieve
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.usersUserIdGet(userId, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-usersUserIdGet-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using Org.OpenAPITools.Api;
-using Org.OpenAPITools.Client;
-using Org.OpenAPITools.Model;
-
-namespace Example
-{
-    public class usersUserIdGetExample
-    {
-        public void main()
-        {
-
-            // Create an instance of the API class
-            var apiInstance = new DefaultApi();
-            var userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d;  // UUID | UUID of the user to retrieve (default to null)
-
-            try {
-                // Retrieve a user by ID
-                User result = apiInstance.usersUserIdGet(userId);
-                Debug.WriteLine(result);
-            } catch (Exception e) {
-                Debug.Print("Exception when calling DefaultApi.usersUserIdGet: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Create an instance of the API class
-$api_instance = new OpenAPITools\Client\Api\DefaultApi();
-$userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to retrieve
-
-try {
-    $result = $api_instance->usersUserIdGet($userId);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->usersUserIdGet: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::OPenAPIClient::Configuration;
-use WWW::OPenAPIClient::DefaultApi;
-
-# Create an instance of the API class
-my $api_instance = WWW::OPenAPIClient::DefaultApi->new();
-my $userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | UUID of the user to retrieve
-
-eval {
-    my $result = $api_instance->usersUserIdGet(userId => $userId);
-    print Dumper($result);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->usersUserIdGet: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import openapi_client
-from openapi_client.rest import ApiException
-from pprint import pprint
-
-# Create an instance of the API class
-api_instance = openapi_client.DefaultApi()
-userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | UUID of the user to retrieve (default to null)
-
-try:
-    # Retrieve a user by ID
-    api_response = api_instance.users_user_id_get(userId)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DefaultApi->usersUserIdGet: %s\n" % e)</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdGet-0-rust">
-                              <pre class="prettyprint"><code class="language-rust">extern crate DefaultApi;
-
-pub fn main() {
-    let userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID
-
-    let mut context = DefaultApi::Context::default();
-    let result = client.usersUserIdGet(userId, &context).wait();
-
-    println!("{:?}", result);
-}
-</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Scopes</h2>
-                          <table>
-                            
-                          </table>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">user_id*</td>
-<td>
-
-
-    <div id="d2e199_usersUserIdGet_userId">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    UUID
-                </span>
-                    <span class="format">
-                        (uuid)
-                    </span>
-
-                    <div class="inner description marked">
-UUID of the user to retrieve
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
-
-
-
-
-
-                          <h2>Responses</h2>
-                            <h3 id="examples-Default-usersUserIdGet-title-200"></h3>
-                            <p id="examples-Default-usersUserIdGet-description-200" class="marked"></p>
-                            <script>
-                              var responseDefault200_description = `OK`;
-                              var responseDefault200_description_break = responseDefault200_description.indexOf('\n');
-                              if (responseDefault200_description_break == -1) {
-                                $("#examples-Default-usersUserIdGet-title-200").text("Status: 200 - " + responseDefault200_description);
-                              } else {
-                                $("#examples-Default-usersUserIdGet-title-200").text("Status: 200 - " + responseDefault200_description.substring(0, responseDefault200_description_break));
-                                $("#examples-Default-usersUserIdGet-description-200").html(responseDefault200_description.substring(responseDefault200_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Default-usersUserIdGet-200" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Default-usersUserIdGet-200-schema">Schema</a>
-                                </li>
-
-
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Default-usersUserIdGet-200-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdGet-200-schema">
-                                <div id="responses-Default-usersUserIdGet-schema-200" class="exampleStyle">
-                                  <script>
-                                    $(document).ready(function() {
-                                      var schemaWrapper = {
-  "description" : "OK",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/User"
-      }
-    }
-  }
-};
-                                      var schema = findNode('schema',schemaWrapper).schema;
-                                      if (!schema) {
-                                        schema = schemaWrapper.schema;
-                                      }
-                                      if (schema == null) {
-                                        return;
-                                      }
-                                      if (schema.$ref != null) {
-                                        schema = defsParser.$refs.get(schema.$ref);
-                                        if (schema.properties != null) {
-                                          Object.keys(schema.properties).forEach( (item) => {
-                                            if (schema.properties[item].$ref != null) {
-                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
-                                            }
-                                          });
-                                        }
-                                      } else if (schema.items != null && schema.items.$ref != null) {
-                                        schema.items = defsParser.$refs.get(schema.items.$ref);
-                                      } else {
-                                        schemaWrapper.definitions = Object.assign({}, defs);
-                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                          console.log(err);
-                                        });
-                                      }
-
-                                      var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdGet-200-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdGet-schema-200');
-                                      result.empty();
-                                      result.append(view.render());
-                                    });
-                                  </script>
-                                </div>
-                                <input id='responses-Default-usersUserIdGet-200-schema-data' type='hidden' value=''></input>
-                              </div>
-                            </div>
-                            <h3 id="examples-Default-usersUserIdGet-title-404"></h3>
-                            <p id="examples-Default-usersUserIdGet-description-404" class="marked"></p>
-                            <script>
-                              var responseDefault404_description = `User not found`;
-                              var responseDefault404_description_break = responseDefault404_description.indexOf('\n');
-                              if (responseDefault404_description_break == -1) {
-                                $("#examples-Default-usersUserIdGet-title-404").text("Status: 404 - " + responseDefault404_description);
-                              } else {
-                                $("#examples-Default-usersUserIdGet-title-404").text("Status: 404 - " + responseDefault404_description.substring(0, responseDefault404_description_break));
-                                $("#examples-Default-usersUserIdGet-description-404").html(responseDefault404_description.substring(responseDefault404_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Default-usersUserIdGet-404" class="nav nav-tabs nav-tabs-examples" >
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Default-usersUserIdGet-404-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdGet-404-schema">
-                                <div id="responses-Default-usersUserIdGet-schema-404" class="exampleStyle">
-                                  <script>
-                                    $(document).ready(function() {
-                                      var schemaWrapper = {
-  "description" : "User not found"
-};
-                                      var schema = findNode('schema',schemaWrapper).schema;
-                                      if (!schema) {
-                                        schema = schemaWrapper.schema;
-                                      }
-                                      if (schema == null) {
-                                        return;
-                                      }
-                                      if (schema.$ref != null) {
-                                        schema = defsParser.$refs.get(schema.$ref);
-                                        if (schema.properties != null) {
-                                          Object.keys(schema.properties).forEach( (item) => {
-                                            if (schema.properties[item].$ref != null) {
-                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
-                                            }
-                                          });
-                                        }
-                                      } else if (schema.items != null && schema.items.$ref != null) {
-                                        schema.items = defsParser.$refs.get(schema.items.$ref);
-                                      } else {
-                                        schemaWrapper.definitions = Object.assign({}, defs);
-                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                          console.log(err);
-                                        });
-                                      }
-
-                                      var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdGet-404-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdGet-schema-404');
-                                      result.empty();
-                                      result.append(view.render());
-                                    });
-                                  </script>
-                                </div>
-                                <input id='responses-Default-usersUserIdGet-404-schema-data' type='hidden' value=''></input>
-                              </div>
-                            </div>
-                            <h3 id="examples-Default-usersUserIdGet-title-401"></h3>
-                            <p id="examples-Default-usersUserIdGet-description-401" class="marked"></p>
-                            <script>
-                              var responseDefault401_description = `Unauthorized`;
-                              var responseDefault401_description_break = responseDefault401_description.indexOf('\n');
-                              if (responseDefault401_description_break == -1) {
-                                $("#examples-Default-usersUserIdGet-title-401").text("Status: 401 - " + responseDefault401_description);
-                              } else {
-                                $("#examples-Default-usersUserIdGet-title-401").text("Status: 401 - " + responseDefault401_description.substring(0, responseDefault401_description_break));
-                                $("#examples-Default-usersUserIdGet-description-401").html(responseDefault401_description.substring(responseDefault401_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Default-usersUserIdGet-401" class="nav nav-tabs nav-tabs-examples" >
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Default-usersUserIdGet-401-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdGet-401-schema">
-                                <div id="responses-Default-usersUserIdGet-schema-401" class="exampleStyle">
-                                  <script>
-                                    $(document).ready(function() {
-                                      var schemaWrapper = {
-  "description" : "Unauthorized"
-};
-                                      var schema = findNode('schema',schemaWrapper).schema;
-                                      if (!schema) {
-                                        schema = schemaWrapper.schema;
-                                      }
-                                      if (schema == null) {
-                                        return;
-                                      }
-                                      if (schema.$ref != null) {
-                                        schema = defsParser.$refs.get(schema.$ref);
-                                        if (schema.properties != null) {
-                                          Object.keys(schema.properties).forEach( (item) => {
-                                            if (schema.properties[item].$ref != null) {
-                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
-                                            }
-                                          });
-                                        }
-                                      } else if (schema.items != null && schema.items.$ref != null) {
-                                        schema.items = defsParser.$refs.get(schema.items.$ref);
-                                      } else {
-                                        schemaWrapper.definitions = Object.assign({}, defs);
-                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                          console.log(err);
-                                        });
-                                      }
-
-                                      var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdGet-401-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdGet-schema-401');
-                                      result.empty();
-                                      result.append(view.render());
-                                    });
-                                  </script>
-                                </div>
-                                <input id='responses-Default-usersUserIdGet-401-schema-data' type='hidden' value=''></input>
-                              </div>
-                            </div>
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-usersUserIdPost">
-                      <article id="api-Default-usersUserIdPost-0" data-group="User" data-name="usersUserIdPost" data-version="0">
-                        <div class="pull-left">
-                          <h1>usersUserIdPost</h1>
-                          <p>Update a user by ID</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/users/{user_id}</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-usersUserIdPost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-dart">Dart</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersUserIdPost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-usersUserIdPost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-python">Python</a></li>
-                          <li class=""><a href="#examples-Default-usersUserIdPost-0-rust">Rust</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-usersUserIdPost-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: application/json" \
- -H "Content-Type: application/json" \
- "http://localhost/users/{user_id}" \
- -d '{
-  &quot;name&quot; : &quot;John Doe&quot;,
-  &quot;email&quot; : &quot;john.doe@example.com&quot;
-}'
-</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-usersUserIdPost-0-java">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
-import org.openapitools.client.auth.*;
-import org.openapitools.client.model.*;
-import org.openapitools.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-    public static void main(String[] args) {
-
-        // Create an instance of the API class
-        DefaultApi apiInstance = new DefaultApi();
-        UUID userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to update
-        UserUpdateRequest userUpdateRequest = ; // UserUpdateRequest | 
-
-        try {
-            User result = apiInstance.usersUserIdPost(userId, userUpdateRequest);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersUserIdPost");
-            e.printStackTrace();
-        }
-    }
-}
-</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-usersUserIdPost-0-dart">
-                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
-
-final api_instance = DefaultApi();
-
-final UUID userId = new UUID(); // UUID | UUID of the user to update
-final UserUpdateRequest userUpdateRequest = new UserUpdateRequest(); // UserUpdateRequest | 
-
-try {
-    final result = await api_instance.usersUserIdPost(userId, userUpdateRequest);
-    print(result);
-} catch (e) {
-    print('Exception when calling DefaultApi->usersUserIdPost: $e\n');
-}
-
-</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-usersUserIdPost-0-android">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.DefaultApi;
-
-public class DefaultApiExample {
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        UUID userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to update
-        UserUpdateRequest userUpdateRequest = ; // UserUpdateRequest | 
-
-        try {
-            User result = apiInstance.usersUserIdPost(userId, userUpdateRequest);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#usersUserIdPost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-usersUserIdPost-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
-
-// Create an instance of the API class
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-UUID *userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID of the user to update (default to null)
-UserUpdateRequest *userUpdateRequest = ; // 
-
-// Update a user by ID
-[apiInstance usersUserIdPostWith:userId
-    userUpdateRequest:userUpdateRequest
-              completionHandler: ^(User output, NSError* error) {
-    if (output) {
-        NSLog(@"%@", output);
-    }
-    if (error) {
-        NSLog(@"Error: %@", error);
-    }
-}];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var Split = require('split');
-
-// Create an instance of the API class
-var api = new Split.DefaultApi()
-var userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // {UUID} UUID of the user to update
-var userUpdateRequest = ; // {UserUpdateRequest} 
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.usersUserIdPost(userId, userUpdateRequest, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-usersUserIdPost-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using Org.OpenAPITools.Api;
-using Org.OpenAPITools.Client;
-using Org.OpenAPITools.Model;
-
-namespace Example
-{
-    public class usersUserIdPostExample
-    {
-        public void main()
-        {
-
-            // Create an instance of the API class
-            var apiInstance = new DefaultApi();
-            var userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d;  // UUID | UUID of the user to update (default to null)
-            var userUpdateRequest = new UserUpdateRequest(); // UserUpdateRequest | 
-
-            try {
-                // Update a user by ID
-                User result = apiInstance.usersUserIdPost(userId, userUpdateRequest);
-                Debug.WriteLine(result);
-            } catch (Exception e) {
-                Debug.Print("Exception when calling DefaultApi.usersUserIdPost: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Create an instance of the API class
-$api_instance = new OpenAPITools\Client\Api\DefaultApi();
-$userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID | UUID of the user to update
-$userUpdateRequest = ; // UserUpdateRequest | 
-
-try {
-    $result = $api_instance->usersUserIdPost($userId, $userUpdateRequest);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->usersUserIdPost: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::OPenAPIClient::Configuration;
-use WWW::OPenAPIClient::DefaultApi;
-
-# Create an instance of the API class
-my $api_instance = WWW::OPenAPIClient::DefaultApi->new();
-my $userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; # UUID | UUID of the user to update
-my $userUpdateRequest = WWW::OPenAPIClient::Object::UserUpdateRequest->new(); # UserUpdateRequest | 
-
-eval {
-    my $result = $api_instance->usersUserIdPost(userId => $userId, userUpdateRequest => $userUpdateRequest);
-    print Dumper($result);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->usersUserIdPost: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import openapi_client
-from openapi_client.rest import ApiException
-from pprint import pprint
-
-# Create an instance of the API class
-api_instance = openapi_client.DefaultApi()
-userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d # UUID | UUID of the user to update (default to null)
-userUpdateRequest =  # UserUpdateRequest | 
-
-try:
-    # Update a user by ID
-    api_response = api_instance.users_user_id_post(userId, userUpdateRequest)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DefaultApi->usersUserIdPost: %s\n" % e)</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-usersUserIdPost-0-rust">
-                              <pre class="prettyprint"><code class="language-rust">extern crate DefaultApi;
-
-pub fn main() {
-    let userId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // UUID
-    let userUpdateRequest = ; // UserUpdateRequest
-
-    let mut context = DefaultApi::Context::default();
-    let result = client.usersUserIdPost(userId, userUpdateRequest, &context).wait();
-
-    println!("{:?}", result);
-}
-</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Scopes</h2>
-                          <table>
-                            
-                          </table>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">user_id*</td>
-<td>
-
-
-    <div id="d2e199_usersUserIdPost_userId">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    UUID
-                </span>
-                    <span class="format">
-                        (uuid)
-                    </span>
-
-                    <div class="inner description marked">
-UUID of the user to update
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
-
-
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">userUpdateRequest <span style="color:red;">*</span></td>
-<td>
-<p class="marked"></p>
-<script>
-$(document).ready(function() {
-  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/UserUpdateRequest"
-      }
-    }
-  },
-  "required" : true
-};
-
-  var schema = findNode('schema',schemaWrapper).schema;
-  if (!schema) {
-    schema = schemaWrapper.schema;
-  }
-  if (schema.$ref != null) {
-    schema = defsParser.$refs.get(schema.$ref);
-  } else if (schema.items != null && schema.items.$ref != null) {
-    schema.items = defsParser.$refs.get(schema.items.$ref);
-  } else {
-    schemaWrapper.definitions = Object.assign({}, defs);
-    $RefParser.dereference(schemaWrapper).catch(function(err) {
-      console.log(err);
-    });
-  }
-
-  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-  var result = $('#d2e199_usersUserIdPost_userUpdateRequest');
-  result.empty();
-  result.append(view.render());
-});
-</script>
-<div id="d2e199_usersUserIdPost_userUpdateRequest"></div>
-</td>
-</tr>
-
-                            </table>
-
-
-
-                          <h2>Responses</h2>
-                            <h3 id="examples-Default-usersUserIdPost-title-200"></h3>
-                            <p id="examples-Default-usersUserIdPost-description-200" class="marked"></p>
-                            <script>
-                              var responseDefault200_description = `OK`;
-                              var responseDefault200_description_break = responseDefault200_description.indexOf('\n');
-                              if (responseDefault200_description_break == -1) {
-                                $("#examples-Default-usersUserIdPost-title-200").text("Status: 200 - " + responseDefault200_description);
-                              } else {
-                                $("#examples-Default-usersUserIdPost-title-200").text("Status: 200 - " + responseDefault200_description.substring(0, responseDefault200_description_break));
-                                $("#examples-Default-usersUserIdPost-description-200").html(responseDefault200_description.substring(responseDefault200_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Default-usersUserIdPost-200" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Default-usersUserIdPost-200-schema">Schema</a>
-                                </li>
-
-
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Default-usersUserIdPost-200-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdPost-200-schema">
-                                <div id="responses-Default-usersUserIdPost-schema-200" class="exampleStyle">
-                                  <script>
-                                    $(document).ready(function() {
-                                      var schemaWrapper = {
-  "description" : "OK",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/User"
-      }
-    }
-  }
-};
-                                      var schema = findNode('schema',schemaWrapper).schema;
-                                      if (!schema) {
-                                        schema = schemaWrapper.schema;
-                                      }
-                                      if (schema == null) {
-                                        return;
-                                      }
-                                      if (schema.$ref != null) {
-                                        schema = defsParser.$refs.get(schema.$ref);
-                                        if (schema.properties != null) {
-                                          Object.keys(schema.properties).forEach( (item) => {
-                                            if (schema.properties[item].$ref != null) {
-                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
-                                            }
-                                          });
-                                        }
-                                      } else if (schema.items != null && schema.items.$ref != null) {
-                                        schema.items = defsParser.$refs.get(schema.items.$ref);
-                                      } else {
-                                        schemaWrapper.definitions = Object.assign({}, defs);
-                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                          console.log(err);
-                                        });
-                                      }
-
-                                      var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdPost-200-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdPost-schema-200');
-                                      result.empty();
-                                      result.append(view.render());
-                                    });
-                                  </script>
-                                </div>
-                                <input id='responses-Default-usersUserIdPost-200-schema-data' type='hidden' value=''></input>
-                              </div>
-                            </div>
-                            <h3 id="examples-Default-usersUserIdPost-title-404"></h3>
-                            <p id="examples-Default-usersUserIdPost-description-404" class="marked"></p>
-                            <script>
-                              var responseDefault404_description = `User not found`;
-                              var responseDefault404_description_break = responseDefault404_description.indexOf('\n');
-                              if (responseDefault404_description_break == -1) {
-                                $("#examples-Default-usersUserIdPost-title-404").text("Status: 404 - " + responseDefault404_description);
-                              } else {
-                                $("#examples-Default-usersUserIdPost-title-404").text("Status: 404 - " + responseDefault404_description.substring(0, responseDefault404_description_break));
-                                $("#examples-Default-usersUserIdPost-description-404").html(responseDefault404_description.substring(responseDefault404_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Default-usersUserIdPost-404" class="nav nav-tabs nav-tabs-examples" >
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Default-usersUserIdPost-404-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-Default-usersUserIdPost-404-schema">
-                                <div id="responses-Default-usersUserIdPost-schema-404" class="exampleStyle">
-                                  <script>
-                                    $(document).ready(function() {
-                                      var schemaWrapper = {
-  "description" : "User not found"
-};
-                                      var schema = findNode('schema',schemaWrapper).schema;
-                                      if (!schema) {
-                                        schema = schemaWrapper.schema;
-                                      }
-                                      if (schema == null) {
-                                        return;
-                                      }
-                                      if (schema.$ref != null) {
-                                        schema = defsParser.$refs.get(schema.$ref);
-                                        if (schema.properties != null) {
-                                          Object.keys(schema.properties).forEach( (item) => {
-                                            if (schema.properties[item].$ref != null) {
-                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
-                                            }
-                                          });
-                                        }
-                                      } else if (schema.items != null && schema.items.$ref != null) {
-                                        schema.items = defsParser.$refs.get(schema.items.$ref);
-                                      } else {
-                                        schemaWrapper.definitions = Object.assign({}, defs);
-                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                          console.log(err);
-                                        });
-                                      }
-
-                                      var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-Default-usersUserIdPost-404-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-Default-usersUserIdPost-schema-404');
-                                      result.empty();
-                                      result.append(view.render());
-                                    });
-                                  </script>
-                                </div>
-                                <input id='responses-Default-usersUserIdPost-404-schema-data' type='hidden' value=''></input>
+                                <input id='responses-Users-registerUser-500-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
                         </article>

@@ -5,6 +5,7 @@
 ARG RUST_VERSION=1.79.0
 ARG APP_NAME=split
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
+LABEL stage=builder
 ARG APP_NAME
 WORKDIR /app
 
