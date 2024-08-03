@@ -1,6 +1,6 @@
 use actix_session::Session;
 use actix_web::{body::BoxBody, get, web, HttpResponse, Responder};
-use log::error;
+use log::{error, info};
 use openapi::models::{UserLoginRequest, UserRegisterRequest};
 use sqlx::Row;
 
@@ -12,11 +12,7 @@ async fn health() -> impl Responder {
 }
 
 #[get("/user/register")]
-async fn register_user(
-    app_state: web::Data<AppState>,
-    _session: Session,
-    body: web::Json<UserRegisterRequest>,
-) -> HttpResponse<BoxBody> {
+async fn register_user(app_state: web::Data<AppState>, _session: Session, body: web::Json<UserRegisterRequest>) -> HttpResponse<BoxBody> {
     let is_conflict = sqlx::query("SELECT 1 FROM users WHERE username = $1")
         .bind(&body.name)
         .fetch_one(&app_state.pg_pool)
@@ -40,23 +36,18 @@ async fn register_user(
 
     let password_hash = bcrypt::hash(&body.password, bcrypt::DEFAULT_COST).expect("bcrypt failed to encrypt password");
 
-    let created = sqlx::query(
-        "INSERT INTO users (username, hashed_password, payment_description) VALUES ($1, $2, $3) RETURNING id",
-    )
-    .bind(&body.name)
-    .bind(&password_hash)
-    .bind(&body.payment_description)
-    .fetch_one(&app_state.pg_pool)
-    .await
-    .map(|id_row| id_row.get::<String, _>(0));
+    let created = sqlx::query("INSERT INTO users (username, hashed_password, payment_description) VALUES ($1, $2, $3) RETURNING id")
+        .bind(&body.name)
+        .bind(&password_hash)
+        .bind(&body.payment_description)
+        .fetch_one(&app_state.pg_pool)
+        .await
+        .map(|id_row| id_row.get::<String, _>(0));
 
     match created {
         Ok(id) => HttpResponse::Created().body(id),
         Err(why) => {
-            error!(
-                "Something went wrong when inserting new User in handler::create_user: {}",
-                why
-            );
+            error!("Something went wrong when inserting new User in handler::create_user: {}", why);
 
             HttpResponse::InternalServerError().body("Something went wrong.")
         }
@@ -64,11 +55,7 @@ async fn register_user(
 }
 
 #[get("/user/login")]
-async fn login_user(
-    _app_state: web::Data<AppState>,
-    session: Session,
-    _body: web::Json<UserLoginRequest>,
-) -> HttpResponse<BoxBody> {
+async fn login_user(_app_state: web::Data<AppState>, session: Session, _body: web::Json<UserLoginRequest>) -> HttpResponse<BoxBody> {
     // If there already is a JWT-Token set, that is valid and has not yet expired, the user does
     // not need to be logged in again
     if AuthToken::try_from(session).is_ok() {
@@ -76,4 +63,21 @@ async fn login_user(
     }
 
     HttpResponse::Ok().body("You have been succesfully logged in!")
+}
+
+#[get("/user")]
+async fn get_user(app_state: web::Data<AppState>, session: Session) -> HttpResponse<BoxBody> {
+    match AuthToken::try_from(session) {
+        Ok(token) => sqlx::query("SELECT (username, payment_description) FROM users WHERE id = $1")
+            .bind(&token.id)
+            .fetch_one(&app_state.pg_pool)
+            .await
+            .map(|row| (row.get::<String, _>(0), row.get::<String, _>(1)))
+            .map(|_| HttpResponse::Ok().body("User!"))
+            .unwrap_or(HttpResponse::InternalServerError().body("Something went wrong.")),
+        Err(why) => {
+            info!("Invalid AuthToken in session due to: {:?}", why);
+            HttpResponse::Unauthorized().body("Session expired. Please log in.")
+        }
+    }
 }

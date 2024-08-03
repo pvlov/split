@@ -1,10 +1,8 @@
 use actix_session::Session;
-use uuid::Uuid;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct AuthToken {
-    id: Uuid,
+    pub id: String,
 }
 
 #[allow(dead_code)]
