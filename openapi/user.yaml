@@ -13,7 +13,7 @@ paths:
       tags:
         - users
       requestBody:
-        description: "Each field is required to be set. Duplicate Usernames are not allowed."
+        description: "Duplicate Usernames are not allowed."
         required: true
         content:
           application/json:
@@ -28,7 +28,7 @@ paths:
                 type: string
                 example: "62edecc3-8d2b-4bae-8e2d-ee19398235fa"
 
-        "409":
+        "400":
           description: Username already in use.
           content:
             application/json:
@@ -37,6 +37,24 @@ paths:
 
         "500":
           description: Something went wrong.
+
+  /user/login:
+    post:
+      operationId: Login-User
+      summary: Login a User
+      description: Logs the User in by setting a JWT-Token in the cookie storage on success.
+      tags:
+        - users
+      requestBody:
+        description: "Some description"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginRequest"
+      responses:
+        "200":
+          description: "User login successful"
 
 components:
   schemas:
@@ -47,7 +65,7 @@ components:
       properties:
         name:
           type: string
-          example: John Doe
+          example: JohnDoe
           minLength: 1
         password:
           type: string
@@ -58,10 +76,25 @@ components:
           example: "Link to PayPal"
       example:
         {
-          name: "John Doe",
+          name: "JohnDoe",
           password: "password123",
           payment_description: "Link to Paypal",
         }
+
+    UserLoginRequest:
+      type: object
+      description: The request body to login a user.
+      required: [name, password]
+      properties:
+        name:
+          type: string
+          example: John Doe
+          minLength: 1
+        password:
+          type: string
+          example: "password123"
+          minLength: 6
+      example: { name: "JohnDoe", password: "password123" }
 
     ErrorResponse:
       type: object
