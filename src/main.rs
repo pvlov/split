@@ -1,6 +1,9 @@
 mod handler;
 mod jwt_auth;
 
+#[macro_use]
+mod common;
+
 use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpServer};
 use sqlx::{

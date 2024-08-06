@@ -1,10 +1,11 @@
+
 use actix_session::Session;
 use actix_web::{body::BoxBody, get, web, HttpResponse, Responder};
 use log::{error, info};
-use openapi::models::{UserLoginRequest, UserRegisterRequest};
+use openapi::models::{ErrorResponse, UserLoginRequest, UserRegisterRequest};
 use sqlx::Row;
 
-use crate::{jwt_auth::AuthToken, AppState};
+use crate::{jwt_auth::JwtClaims, AppState};
 
 #[get("/health")]
 async fn health() -> impl Responder {
@@ -55,29 +56,49 @@ async fn register_user(app_state: web::Data<AppState>, _session: Session, body: 
 }
 
 #[get("/user/login")]
-async fn login_user(_app_state: web::Data<AppState>, session: Session, _body: web::Json<UserLoginRequest>) -> HttpResponse<BoxBody> {
+async fn login_user(app_state: web::Data<AppState>, session: Session, body: web::Json<UserLoginRequest>) -> HttpResponse<BoxBody> {
     // If there already is a JWT-Token set, that is valid and has not yet expired, the user does
     // not need to be logged in again
-    if AuthToken::try_from(session).is_ok() {
-        return HttpResponse::Ok().body("You have been succesfully logged in!");
+    if JwtClaims::try_from(&session).is_ok() {
+        return HttpResponse::Ok().body("You are already succesfully logged in!");
     }
 
-    HttpResponse::Ok().body("You have been succesfully logged in!")
+    let row = sqlx::query_as::<_, (String, String)>("SELCT (id, hashed_password) FROM users WHERE username = $1")
+        .bind(&body.name)
+        .fetch_one(&app_state.pg_pool)
+        .await;
+
+
+    match row {
+        Ok((id, hash)) => {
+            if bcrypt::verify(&body.password, &hash).is_err() {
+                return HttpResponse::Unauthorized().body("Wrong password!");
+            }
+
+            let token = JwtClaims::new(id).encoded().expect("Failed to encode JwtToken");
+            let _ = session.insert("jwt", token);
+            HttpResponse::Ok().body("You have successfully logged in!")
+
+        }
+        Err(why) => match why {
+            sqlx::Error::RowNotFound => HttpResponse::NotFound().body("No such Account exists"),
+            _ => HttpResponse::InternalServerError().body("Something went wrong"),
+        },
+    }
 }
 
 #[get("/user")]
 async fn get_user(app_state: web::Data<AppState>, session: Session) -> HttpResponse<BoxBody> {
-    match AuthToken::try_from(session) {
-        Ok(token) => sqlx::query("SELECT (username, payment_description) FROM users WHERE id = $1")
+    match JwtClaims::try_from(&session) {
+            Ok(token) => sqlx::query_as::<_, (String, String)>("SELECT (username, payment_description) FROM users WHERE id = $1")
             .bind(&token.id)
             .fetch_one(&app_state.pg_pool)
             .await
-            .map(|row| (row.get::<String, _>(0), row.get::<String, _>(1)))
             .map(|_| HttpResponse::Ok().body("User!"))
             .unwrap_or(HttpResponse::InternalServerError().body("Something went wrong.")),
         Err(why) => {
             info!("Invalid AuthToken in session due to: {:?}", why);
-            HttpResponse::Unauthorized().body("Session expired. Please log in.")
+            HttpResponse::Unauthorized().json(ErrorResponse::new(String::from("Something went wrong")))
+            }
         }
-    }
 }
