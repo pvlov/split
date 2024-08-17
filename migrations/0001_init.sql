@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(255) UNIQUE NOT NULL,
 	hashed_password BYTEA NOT NULL,
-	payment_description VARCHAR(255) NOT NULL DEFAULT 'No payment description available',	
+	description VARCHAR(255) NOT NULL DEFAULT 'No payment description available',	
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

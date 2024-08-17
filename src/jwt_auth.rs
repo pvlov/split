@@ -1,9 +1,9 @@
 use actix_session::Session;
 use jiff::{tz::TimeZone, ToSpan, Zoned};
-use jsonwebtoken::{errors::Error, EncodingKey, Header};
-use serde::Serialize;
+use jsonwebtoken::{decode, errors::Error, DecodingKey, EncodingKey, Header, Validation};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct JwtClaims {
     pub id: String,
     pub exp: Zoned,
@@ -20,8 +20,26 @@ pub enum JwtError {
 impl TryFrom<&Session> for JwtClaims {
     type Error = JwtError;
 
-    fn try_from(_session: &Session) -> Result<Self, Self::Error> {
-        Err(JwtError::NoToken)
+    fn try_from(session: &Session) -> Result<Self, Self::Error> {
+        let token = session
+            .get::<String>("jwt")
+            .map_err(|_| JwtError::NoToken)?
+            .ok_or(JwtError::NoToken)?;
+
+        let decoding_key = DecodingKey::from_secret("secret".as_ref());
+        let validation = Validation::default();
+
+        match decode::<JwtClaims>(&token, &decoding_key, &validation) {
+            Ok(token_data) => {
+                // Check if the token is expired
+                if Zoned::now().with_time_zone(TimeZone::UTC) >= token_data.claims.exp {
+                    Err(JwtError::Expired)
+                } else {
+                    Ok(token_data.claims)
+                }
+            }
+            Err(_) => Err(JwtError::SigCheckFailed),
+        }
     }
 }
 

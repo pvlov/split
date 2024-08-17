@@ -3,11 +3,24 @@
 # Create a stage for building the application.
 
 ARG RUST_VERSION=1.79.0
+ARG OPENAPI_GENERATOR_VERSION=7.0.0
 ARG APP_NAME=split
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
 LABEL stage=builder
 ARG APP_NAME
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+	build-essential \
+	curl \
+	openjdk-17-jdk \
+	openssl \
+	libssl-dev \
+	pkg-config \
+	&& curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+RUN npm install -g @openapitools/openapi-generator-cli
 
 # Build the application.
 # Leverage a cache mount to /usr/local/cargo/registry/
@@ -17,22 +30,22 @@ WORKDIR /app
 # source code into the container. Once built, copy the executable to an
 # output directory before the cache mounted /app/target is unmounted.
 RUN --mount=type=bind,source=src,target=src \
-    --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
+    --mount=type=bind,source=openapi,target=openapi \
+	--mount=type=bind,source=Makefile,target=Makefile \
+	--mount=type=bind,source=openapi-config.yaml,target=openapi-config.yaml \
+	--mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
-    --mount=type=cache,target=/app/target/ \
     --mount=type=cache,target=/usr/local/cargo/registry/ \ 
 	--mount=type=bind,source=migrations,target=migrations \
     <<EOF
 set -e
+make openapi-models
 cargo build --locked --release
 cp ./target/release/$APP_NAME /bin/server
 EOF
 
-################################################################################
 # Create a new stage for running the application that contains the minimal
-# runtime dependencies for the application. This often uses a different base
-# image from the build stage where the necessary files are copied from the build
-# stage.
+# runtime dependencies for the application.
 FROM debian:latest AS final
 
 # Create a non-privileged user that the app will run under.

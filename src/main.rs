@@ -1,8 +1,5 @@
-mod handler;
+mod handler; 
 mod jwt_auth;
-
-#[macro_use]
-mod common;
 
 use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpServer};
@@ -52,9 +49,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(cors)
             .app_data(web::Data::new(app_data.clone()))
-            .service(handler::health)
-            .service(handler::register_user)
-            .service(handler::login_user)
+            .service(handler::user_handler::health)
+            .service(handler::user_handler::register_user)
+            .service(handler::user_handler::login_user)
+            .service(handler::user_handler::get_user)
     })
     .bind(("0.0.0.0", 8080))?
     .run()

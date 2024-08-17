@@ -7,13 +7,14 @@ use sqlx::Row;
 
 use crate::{jwt_auth::JwtClaims, AppState};
 
+
 #[get("/health")]
 async fn health() -> impl Responder {
     "UP"
 }
 
 #[get("/user/register")]
-async fn register_user(app_state: web::Data<AppState>, _session: Session, body: web::Json<UserRegisterRequest>) -> HttpResponse<BoxBody> {
+async fn register_user(app_state: web::Data<AppState>, body: web::Json<UserRegisterRequest>) -> HttpResponse<BoxBody> {
     let is_conflict = sqlx::query("SELECT 1 FROM users WHERE username = $1")
         .bind(&body.name)
         .fetch_one(&app_state.pg_pool)
@@ -22,7 +23,7 @@ async fn register_user(app_state: web::Data<AppState>, _session: Session, body: 
     match is_conflict {
         Ok(row) => {
             if !row.is_empty() {
-                return HttpResponse::BadRequest().body("Username or E-Mail already in use!");
+                return HttpResponse::BadRequest().body("Username already in use!");
             }
         }
         Err(why) => {
@@ -37,18 +38,21 @@ async fn register_user(app_state: web::Data<AppState>, _session: Session, body: 
 
     let password_hash = bcrypt::hash(&body.password, bcrypt::DEFAULT_COST).expect("bcrypt failed to encrypt password");
 
-    let created = sqlx::query("INSERT INTO users (username, hashed_password, payment_description) VALUES ($1, $2, $3) RETURNING id")
+    let created = sqlx::query("INSERT INTO users (username, hashed_password, description) VALUES ($1, $2, $3) RETURNING id")
         .bind(&body.name)
         .bind(&password_hash)
-        .bind(&body.payment_description)
+        .bind(&body.description)
         .fetch_one(&app_state.pg_pool)
         .await
         .map(|id_row| id_row.get::<String, _>(0));
+
+
 
     match created {
         Ok(id) => HttpResponse::Created().body(id),
         Err(why) => {
             error!("Something went wrong when inserting new User in handler::create_user: {}", why);
+
 
             HttpResponse::InternalServerError().body("Something went wrong.")
         }
@@ -90,7 +94,7 @@ async fn login_user(app_state: web::Data<AppState>, session: Session, body: web:
 #[get("/user")]
 async fn get_user(app_state: web::Data<AppState>, session: Session) -> HttpResponse<BoxBody> {
     match JwtClaims::try_from(&session) {
-            Ok(token) => sqlx::query_as::<_, (String, String)>("SELECT (username, payment_description) FROM users WHERE id = $1")
+            Ok(token) => sqlx::query_as::<_, (String, String)>("SELECT (username, description) FROM users WHERE id = $1")
             .bind(&token.id)
             .fetch_one(&app_state.pg_pool)
             .await

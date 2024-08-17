@@ -22,11 +22,6 @@ paths:
       responses:
         "201":
           description: The Server successfully created the requested User. Returns the id of the newly created User.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "62edecc3-8d2b-4bae-8e2d-ee19398235fa"
 
         "400":
           description: Username already in use.
@@ -42,7 +37,7 @@ paths:
     post:
       operationId: Login-User
       summary: Login a User
-      description: Logs the User in by setting a JWT-Token in the cookie storage on success.
+      description: Logs-in the user in by setting a JWT-Token in the cookie storage on success.
       tags:
         - users
       requestBody:
@@ -58,7 +53,7 @@ paths:
         "404":
           description: "Not found"
         "500":
-          description: "Something went wrong internally"
+          description: "Something went wrong"
         "401":
           description: "Unauthorized"
 
@@ -67,7 +62,7 @@ components:
     UserRegisterRequest:
       type: object
       description: The request body to create a user.
-      required: [name, password, payment_description]
+      required: [name, password, description]
       properties:
         name:
           type: string
@@ -77,14 +72,14 @@ components:
           type: string
           example: "password123"
           minLength: 6
-        payment_description:
+        description:
           type: string
           example: "Link to PayPal"
       example:
         {
           name: "JohnDoe",
           password: "password123",
-          payment_description: "Link to Paypal",
+          description: "Link to Paypal",
         }
 
     UserLoginRequest:

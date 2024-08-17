@@ -17,4 +17,4 @@ openapi-docs:
 
 deploy:
 	@docker compose up -d
-	@docker image prune --filter label=stage=builder
+	@yes | docker image prune --filter label=stage=builder
