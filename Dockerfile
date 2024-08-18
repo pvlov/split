@@ -3,7 +3,6 @@
 # Create a stage for building the application.
 
 ARG RUST_VERSION=1.79.0
-ARG OPENAPI_GENERATOR_VERSION=7.0.0
 ARG APP_NAME=split
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
 LABEL stage=builder
@@ -23,12 +22,6 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g @openapitools/openapi-generator-cli
 
 # Build the application.
-# Leverage a cache mount to /usr/local/cargo/registry/
-# for downloaded dependencies and a cache mount to /app/target/ for 
-# compiled dependencies which will speed up subsequent builds.
-# Leverage a bind mount to the src directory to avoid having to copy the
-# source code into the container. Once built, copy the executable to an
-# output directory before the cache mounted /app/target is unmounted.
 RUN --mount=type=bind,source=src,target=src \
     --mount=type=bind,source=openapi,target=openapi \
 	--mount=type=bind,source=Makefile,target=Makefile \
@@ -46,10 +39,11 @@ EOF
 
 # Create a new stage for running the application that contains the minimal
 # runtime dependencies for the application.
-FROM debian:latest AS final
+FROM debian:11 AS final
+
+LABEL stage=final
 
 # Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 ARG UID=10001
 RUN adduser \
     --disabled-password \

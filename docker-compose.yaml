@@ -33,3 +33,5 @@ services:
 
 volumes:
   pg-data:
+    labels:
+      stage: final
