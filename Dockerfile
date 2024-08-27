@@ -2,7 +2,7 @@
 
 # Create a stage for building the application.
 
-ARG RUST_VERSION=1.79.0
+ARG RUST_VERSION=1.80.0
 ARG APP_NAME=split
 FROM rust:${RUST_VERSION}-slim-bullseye AS build
 LABEL stage=builder
@@ -32,7 +32,7 @@ RUN --mount=type=bind,source=src,target=src \
 	--mount=type=bind,source=migrations,target=migrations \
     <<EOF
 set -e
-make openapi-models
+make models 
 cargo build --locked --release
 cp ./target/release/$APP_NAME /bin/server
 EOF

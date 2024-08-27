@@ -53,7 +53,6 @@ async fn register_user(app_state: web::Data<AppState>, body: web::Json<UserRegis
         Err(why) => {
             error!("Something went wrong when inserting new User in handler::create_user: {}", why);
 
-
             HttpResponse::InternalServerError().body("Something went wrong.")
         }
     }
@@ -67,7 +66,7 @@ async fn login_user(app_state: web::Data<AppState>, session: Session, body: web:
         return HttpResponse::Ok().body("You are already succesfully logged in!");
     }
 
-    let row = sqlx::query_as::<_, (String, String)>("SELCT (id, hashed_password) FROM users WHERE username = $1")
+    let row = sqlx::query_as::<_, (String, String)>("SELECT (id, hashed_password) FROM users WHERE username = $1")
         .bind(&body.name)
         .fetch_one(&app_state.pg_pool)
         .await;

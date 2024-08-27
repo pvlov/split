@@ -1,4 +1,4 @@
-.PHONY: all models docs compose recompose clean purge
+.PHONY: models docs compose recompose clean purge
 
 
 # OPENAPI 
@@ -9,8 +9,8 @@ OPENAPI_MODELS_OUT=target/openapi/
 OPENAPI_DOCS_OUT=documentation/
 
 all:
-	make models
-	make composecompose
+	@make models
+	@make compose
 
 models:
 	@$(OPENAPI_GENERATOR) -i openapi/user.yaml -g rust -c $(OPENAPI_MODELS_CONFIG_FILE) -o $(OPENAPI_MODELS_OUT) 
