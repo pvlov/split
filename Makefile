@@ -9,7 +9,7 @@ OPENAPI_MODELS_OUT=target/openapi/
 OPENAPI_DOCS_OUT=documentation/
 
 all:
-	@make models
+	# @make models
 	@make compose
 
 models:
@@ -19,7 +19,7 @@ docs:
 	@$(OPENAPI_GENERATOR) -i openapi/user.yaml -g html2 -o $(OPENAPI_DOCS_OUT) 
 
 compose:
-	@docker compose up -d
+	@docker compose --profile backend up -d
 	@yes | docker image prune --filter label=stage=builder
 
 recompose: 

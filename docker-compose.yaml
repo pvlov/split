@@ -1,4 +1,13 @@
 services:
+  client:
+    build:
+      context: ./src/client/
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    profiles:
+      - frontend
+
   server:
     build:
       context: .
@@ -15,6 +24,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    profiles:
+      - backend
 
   postgres:
     image: postgres:latest
@@ -30,6 +41,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    profiles:
+      - backend
 
 volumes:
   pg-data:

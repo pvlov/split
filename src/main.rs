@@ -1,5 +1,8 @@
 mod handler; 
 mod jwt_auth;
+mod common;
+
+use common::constants::PG_HOST;
 
 use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpServer};
@@ -8,7 +11,6 @@ use sqlx::{
     PgPool,
 };
 
-const PG_HOST: &str = "postgres";
 
 #[derive(Clone)]
 struct AppState {
