@@ -1,15 +1,14 @@
-.PHONY: models docs compose recompose clean purge
+.PHONY: models docs deploy redeploy clean purge
 
 
 # OPENAPI 
 
 OPENAPI_GENERATOR=openapi-generator-cli generate
 OPENAPI_MODELS_CONFIG_FILE=openapi-config.yaml
-OPENAPI_MODELS_OUT=target/openapi/
+OPENAPI_MODELS_OUT=openapi-models/
 OPENAPI_DOCS_OUT=documentation/
 
 all:
-	# @make models
 	@make compose
 
 models:
@@ -18,11 +17,11 @@ models:
 docs:
 	@$(OPENAPI_GENERATOR) -i openapi/user.yaml -g html2 -o $(OPENAPI_DOCS_OUT) 
 
-compose:
+deploy:
 	@docker compose --profile backend up -d
 	@yes | docker image prune --filter label=stage=builder
 
-recompose: 
+redeploy: 
 	@docker compose up --build server -d
 	@yes | docker image prune --filter label=stage=builder # removes all builder stages used 
 

@@ -12,14 +12,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
 	build-essential \
 	curl \
-	openjdk-17-jdk \
 	openssl \
 	libssl-dev \
-	pkg-config \
-	&& curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
-
-RUN npm install -g @openapitools/openapi-generator-cli
+	pkg-config 
 
 # Build the application.
 RUN --mount=type=bind,source=src,target=src \
@@ -27,13 +22,13 @@ RUN --mount=type=bind,source=src,target=src \
 	--mount=type=bind,source=Makefile,target=Makefile \
 	--mount=type=bind,source=openapi-config.yaml,target=openapi-config.yaml \
 	--mount=type=bind,source=Cargo.toml,target=Cargo.toml \
-    # --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
+    --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
     --mount=type=cache,target=/usr/local/cargo/registry/ \ 
 	--mount=type=bind,source=migrations,target=migrations \
+	--mount=type=bind,source=openapi-models,target=openapi-models\
     <<EOF
 set -e
-make models 
-cargo build --release --verbose
+cargo build --release --locked
 cp ./target/release/$APP_NAME /bin/server
 EOF
 

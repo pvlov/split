@@ -1,11 +1,13 @@
-import "./App.css";
-import { Button } from "@/components/ui/button";
+import { RegisterForm } from "@/components/authentication";
+import { ThemeProvider } from "@/components/theme-provider";
+import {} from "@/components/theme-provider";
+import "@/App.css";
 
 function App() {
   return (
-    <div>
-      <Button>Click me</Button>
-    </div>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <RegisterForm />
+    </ThemeProvider>
   );
 }
 
