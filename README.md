@@ -27,3 +27,4 @@ The project uses `make`:
 - Add client (prob TS + react)
 - Add automatic deployment to RaspPi
 - Add automatic generation and deployment of openapi docs through github pages
+- use uuidv7?

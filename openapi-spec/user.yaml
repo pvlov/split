@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: Split
+  description: An easy way to split expenses
+  version: 1.0.0
+
+paths:
+  /user/{userId}:
+    get:
+      operationId: Get-User
+      summary: Retrieve a user by ID
+      description: Fetch the details of a user given their unique ID.
+      tags:
+        - user
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to fetch
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "af2d96f4-fab0-4176-ae98-30aeaad512e3"
+      responses:
+        "200":
+          description: "User login successful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Something went wrong"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      description: Default error response object. The given String never exposes internal infrastructure and can be shown to the client.
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          example: Username already in use
+      example: { reason: "Username already in use" }
+
+    User:
+      type: object
+      description: The user object
+      required: [id, username, description]
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "af2d96f4-fab0-4176-ae98-30aeaad512e3"
+        username:
+          type: string
+          example: JohnDoe
+        description:
+          type: string
+          example: "Link to PayPal"
+
+    CreateUserPayload:
+      type: object
+      description: The object required to create a new User
+      required: [username, password, description]
+      properties:
+        username:
+          type: string
+          example: JohnDoe
+        password:
+          type: string
+          example: "password"
+        description:
+          type: string
+          example: "Link to PayPal"
+
+    LoginUserPayload:
+      type: object
+      description: The object required to login a User
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: JohnDoe
+        password:
+          type: string
+          example: "password"
+
+tags:
+  - name: user
+    description: "Operations regarding users"

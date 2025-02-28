@@ -12,7 +12,8 @@ all:
 	@make compose
 
 models:
-	@$(OPENAPI_GENERATOR) -i openapi/user.yaml -g rust -c $(OPENAPI_MODELS_CONFIG_FILE) -o $(OPENAPI_MODELS_OUT) 
+	@ rm -rf $(OPENAPI_MODELS_OUT)
+	@ $(OPENAPI_GENERATOR) -i openapi-spec/user.yaml -g rust -c $(OPENAPI_MODELS_CONFIG_FILE) -o $(OPENAPI_MODELS_OUT) 
 
 docs:
 	@$(OPENAPI_GENERATOR) -i openapi/user.yaml -g html2 -o $(OPENAPI_DOCS_OUT) 

@@ -1,0 +1,14 @@
+:5173
+
+root * /usr/share/caddy
+file_server
+
+# SPA routing - redirect unknown routes to index.html
+@notFound {
+	not file
+	path /api/*
+}
+rewrite @notFound /index.html
+
+# Enable gzip compression
+encode gzip
