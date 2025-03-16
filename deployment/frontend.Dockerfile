@@ -1,5 +1,6 @@
 # Stage 1: Build the React app with Vite
 FROM node:18-alpine AS builder
+LABEL stage=builder
 
 WORKDIR /app
 
@@ -15,6 +16,7 @@ RUN yarn build
 
 # Stage 2: Serve with Caddy
 FROM caddy:alpine AS final
+LABEL stage=final
 
 # Copy built app to Caddy's web root
 COPY --from=builder /app/dist /usr/share/caddy

@@ -14,16 +14,16 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	openssl \
 	libssl-dev \
-	pkg-config 
+	pkg-config
 
 # Build the application.
 RUN --mount=type=bind,source=src,target=src \
 	--mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
-    --mount=type=cache,target=/usr/local/cargo/registry/ \ 
+    --mount=type=cache,target=/usr/local/cargo/registry/ \
 	--mount=type=bind,source=migrations,target=migrations \
-	--mount=type=bind,source=openapi-models,target=openapi-models\
-    <<EOF
+	--mount=type=bind,source=openapi-models,target=openapi-models \
+	<<EOF
 set -e
 cargo build --release --locked
 cp ./target/release/$APP_NAME /bin/server

@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  AudioWaveform,
-  BookOpen,
-  Command,
-  GalleryVerticalEnd,
-  Settings2,
-  Users,
-} from "lucide-react";
+import { BookOpen, Settings2, Users } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -24,23 +17,6 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/test.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Groups",

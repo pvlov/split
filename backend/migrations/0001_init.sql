@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS users (
 	profile_picture VARCHAR(255) NOT NULL DEFAULT 'penguin',
     username VARCHAR(255) UNIQUE NOT NULL,
 	hashed_password BYTEA NOT NULL,
-	description VARCHAR(255) NOT NULL DEFAULT 'No description available',	
+	description VARCHAR(255) NOT NULL DEFAULT 'No description available',
+	role SMALLINT NOT NULL DEFAULT 0, -- 0: user, 1: admin
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

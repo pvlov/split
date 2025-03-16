@@ -1,10 +1,10 @@
 use std::future::{ready, Ready};
 
-use actix_web::{error::ErrorInternalServerError, FromRequest, HttpMessage};
+use actix_web::{error::ErrorInternalServerError, App, FromRequest, HttpMessage};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use uuid::Uuid;
+use crate::config::{AppConfig, PostgresConfig, RedisConfig};
 
-// While i kind of hate this, the key for any value you attach to a request is type-based.
 #[derive(Default, Clone)]
 pub struct AppSession {
     pub(crate) user_id: Uuid,
@@ -32,6 +32,8 @@ impl FromRequest for AppSession {
 }
 
 
+
+
 #[derive(Clone)]
 pub struct AppContext {
     pub(crate) pg_pool: PgPool,
@@ -39,23 +41,20 @@ pub struct AppContext {
 }
 
 impl AppContext {
-    pub async fn new() -> Self {
-        let pg_pool = Self::init_db().await;
-        let session_store = Self::init_redis().await;
+    pub async fn from_config(config: &AppConfig) -> Self {
+        let pg_pool = Self::init_postgres(&config.postgres).await;
+        let redis_client = Self::init_redis(&config.redis).await;
 
-        Self { pg_pool, redis_client: session_store }
+        Self {
+            pg_pool,
+            redis_client,
+        }
     }
 
-    async fn init_db() -> PgPool {
-        let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-        let max_connections = std::env::var("MAX_CONNECTIONS")
-            .expect("MAX_CONNECTIONS must be set")
-            .parse::<u32>()
-            .expect("MAX_CONNECTIONS must be a number");
-
+    async fn init_postgres(config: &PostgresConfig) -> PgPool {
         let pool = PgPoolOptions::new()
-            .max_connections(max_connections)
-            .connect(&database_url)
+            .max_connections(config.max_connections)
+            .connect(&config.url)
             .await
             .expect("Failed to connect to Postgres DB");
 
@@ -64,10 +63,7 @@ impl AppContext {
         pool
     }
 
-    async fn init_redis() -> redis::Client {
-        let redis_url = std::env::var("REDIS_URL").expect("REDIS_URL must be set");
-
-        redis::Client::open(redis_url).expect("Failed to connect to Redis")
+    async fn init_redis(config: &RedisConfig) -> redis::Client {
+        redis::Client::open(config.url.clone()).expect("Failed to connect to Redis")
     }
 }
-

@@ -1,17 +1,13 @@
-use std::sync::LazyLock;
-
-use chrono::DateTime;
-use chrono::Utc;
+use anyhow::{bail, Error};
+use chrono::{DateTime, Utc};
 use openapi::models::CreateUserPayload;
-use serde::Deserialize;
-use serde::Serialize;
-use sqlx::FromRow;
-use sqlx::PgPool;
+use serde::{Deserialize, Serialize};
+use sqlx::{FromRow, PgPool};
 use uuid::Uuid;
 
-use anyhow::{bail, Error};
-
 use openapi::models::user::User as OpenApiUser;
+
+pub(crate) mod routes;
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub(crate) struct User {
@@ -52,7 +48,7 @@ impl User {
 
         match user {
             Ok(user) => Ok(user),
-            Err(_) => bail!("Failed to get user by name")
+            Err(_) => bail!("Failed to get user by name"),
         }
     }
 
@@ -61,7 +57,7 @@ impl User {
 
         match users {
             Ok(users) => Ok(users),
-            Err(_) => bail!("Failed to get all users")
+            Err(_) => bail!("Failed to get all users"),
         }
     }
 
@@ -77,7 +73,7 @@ impl User {
 
         match user {
             Ok(user) => Ok(user),
-            Err(_) => bail!("Failed to create user")
+            Err(_) => bail!("Failed to create user"),
         }
     }
 
@@ -85,17 +81,17 @@ impl User {
         let user = sqlx::query_as::<_, User>(
             "UPDATE users SET username = $1, hashed_password = $2, description = $3, updated_at = $4 WHERE id = $5 RETURNING *",
         )
-        .bind(&user.username)
-        .bind(&user.hashed_password)
-        .bind(&user.description)
-        .bind(&user.updated_at)
-        .bind(&user.id)
-        .fetch_one(pool)
-        .await;
+            .bind(&user.username)
+            .bind(&user.hashed_password)
+            .bind(&user.description)
+            .bind(&user.updated_at)
+            .bind(&user.id)
+            .fetch_one(pool)
+            .await;
 
         match user {
             Ok(user) => Ok(user),
-            Err(_) => bail!("Failed to update user")
+            Err(_) => bail!("Failed to update user"),
         }
     }
 
@@ -106,7 +102,7 @@ impl User {
             Ok(res) if res.rows_affected() > 0 => Ok(Some(())),
             Ok(_) => Ok(None),
             Err(sqlx::Error::RowNotFound) => Ok(None),
-            Err(_) => bail!("Failed to delete user")
+            Err(_) => bail!("Failed to delete user"),
         }
     }
 

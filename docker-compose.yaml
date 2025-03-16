@@ -2,9 +2,10 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: ../deployment/frontend.Dockerfile
       target: final
     ports:
-      - 5173:5173
+      - "5173:5173"
     env_file:
       - .env
     restart: always
@@ -15,9 +16,10 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: ../deployment/backend.Dockerfile
       target: final
     ports:
-      - 8080:8080
+      - "8080:8080"
     env_file:
       - .env
     secrets:
